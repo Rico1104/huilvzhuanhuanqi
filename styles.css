@@ -387,43 +387,115 @@ tr:hover .rate-value.middle {
 /* 响应式设计 */
 @media (max-width: 768px) {
     body {
-        padding: 5px;
+        padding: 0;
+        min-height: 100vh;
         background-attachment: fixed;
+        overflow-x: hidden;
     }
 
     .container {
-        padding: 12px;
+        padding: 10px;
         margin: 0;
         width: 100%;
-        border-radius: 12px;
+        border-radius: 0;
+        min-height: 100vh;
+        display: flex;
+        flex-direction: column;
     }
 
-    /* 汇率表格容器优化 */
+    /* 转换器区域优化 */
+    .converter-box {
+        gap: 10px;
+        margin-bottom: 15px;
+        order: 1;
+    }
+
+    .input-group input {
+        height: 44px;
+        font-size: 16px;
+    }
+
+    .currency-selectors {
+        flex-direction: column;
+        gap: 8px;
+    }
+
+    .select-group select {
+        height: 44px;
+        font-size: 16px;
+    }
+
+    #swap-button {
+        width: 40px;
+        height: 40px;
+        margin: 5px auto;
+    }
+
+    #convert-button {
+        height: 44px;
+        font-size: 16px;
+    }
+
+    /* 结果显示优化 */
+    .result {
+        padding: 15px;
+        margin-bottom: 15px;
+    }
+
+    .result-amount {
+        font-size: 1.8em;
+        word-break: break-all;
+    }
+
+    /* 图表区域优化 */
+    .chart-container {
+        order: 2;
+        margin: 10px 0;
+        padding: 10px;
+        height: 300px;
+        min-height: 300px;
+    }
+
+    .chart-controls {
+        flex-direction: column;
+        gap: 8px;
+        padding: 8px;
+        margin-bottom: 10px;
+    }
+
+    .chart-controls select {
+        width: 100%;
+        height: 40px;
+        font-size: 14px;
+    }
+
+    /* 汇率表格优化 */
     .rate-table {
+        order: 3;
         margin: 10px 0;
         padding: 10px;
         overflow: hidden;
     }
 
-    /* 表格滚动容器优化 */
     .table-wrapper {
         margin: 0;
         padding: 0;
         overflow-x: auto;
         -webkit-overflow-scrolling: touch;
-        scrollbar-width: none; /* Firefox */
-        -ms-overflow-style: none; /* IE and Edge */
+        scrollbar-width: none;
+        -ms-overflow-style: none;
         position: relative;
+        max-height: 400px;
     }
 
     .table-wrapper::-webkit-scrollbar {
-        display: none; /* Chrome, Safari and Opera */
+        display: none;
     }
 
-    /* 表格布局优化 */
     table {
+        width: 100%;
         min-width: 100%;
-        font-size: 0.8em;
+        font-size: 0.85em;
         border-collapse: collapse;
     }
 
@@ -431,138 +503,70 @@ tr:hover .rate-value.middle {
         position: sticky;
         top: 0;
         z-index: 10;
-        padding: 8px 6px;
-        font-size: 0.75em;
+        padding: 10px 8px;
+        font-size: 0.8em;
         white-space: nowrap;
         background: linear-gradient(45deg, #667eea, #764ba2);
     }
 
     td {
-        padding: 8px 6px;
+        padding: 8px;
+        font-size: 0.85em;
+    }
+
+    /* 错误提示优化 */
+    .error-message {
+        position: fixed;
+        top: 10px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 90%;
+        max-width: 300px;
+        background: rgba(220, 38, 38, 0.95);
+        color: white;
+        padding: 12px 15px;
+        border-radius: 8px;
         font-size: 0.9em;
+        z-index: 1000;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
     }
 
-    /* 汇率值显示优化 */
-    .rate-value {
-        padding: 4px 6px;
-        min-width: 60px;
-        font-size: 0.8em;
+    /* 加载状态优化 */
+    .loading {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: rgba(255, 255, 255, 0.8);
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        z-index: 999;
     }
 
-    .rate-change-up,
-    .rate-change-down {
-        padding: 3px 6px;
-        min-width: 50px;
-        font-size: 0.8em;
-    }
-
-    /* 图表区域优化 */
-    .chart-container {
-        margin: 15px 0;
-        padding: 10px;
-        height: 250px;
-    }
-
-    .chart-controls {
-        padding: 8px;
-        gap: 6px;
-    }
-
-    .chart-controls select {
-        padding: 8px;
-        font-size: 0.9em;
-        height: 36px;
-    }
-
-    /* 转换器区域优化 */
-    .converter-box {
-        gap: 12px;
-        margin-bottom: 20px;
-    }
-
-    .currency-selectors {
-        gap: 8px;
-    }
-
-    .select-group select {
-        height: 42px;
-        padding: 8px;
-    }
-
-    /* 结果显示优化 */
-    .result {
-        padding: 15px;
-    }
-
-    .result-amount {
-        font-size: 1.6em;
-        word-break: break-all;
-    }
-
-    .exchange-rate {
-        font-size: 0.8em;
-        padding: 3px 6px;
-    }
-
-    /* 标题和信息优化 */
-    h1 {
-        font-size: 1.3em;
-        margin-bottom: 10px;
-    }
-
-    h2 {
-        font-size: 1.1em;
-        margin-bottom: 8px;
-    }
-
-    .rate-info {
-        font-size: 0.75em;
-        padding: 6px;
-        margin-bottom: 10px;
-    }
-}
-
-/* 超小屏幕优化 */
-@media (max-width: 320px) {
-    .container {
-        padding: 8px;
-    }
-
-    h1 {
-        font-size: 1.2em;
-    }
-
-    .result-amount {
-        font-size: 1.4em;
-    }
-
-    .rate-value,
-    .rate-change-up,
-    .rate-change-down {
-        min-width: 45px;
-        font-size: 0.75em;
+    .loading::after {
+        width: 30px;
+        height: 30px;
+        margin: 0;
     }
 }
 
 /* 横屏模式优化 */
 @media (max-width: 768px) and (orientation: landscape) {
-    body {
+    .container {
         padding: 5px;
     }
 
-    .container {
-        max-width: 95%;
-        margin: 0 auto;
-    }
-
     .chart-container {
-        height: 200px;
+        height: 250px;
+        min-height: 250px;
     }
 
     .currency-selectors {
         flex-direction: row;
         align-items: center;
-        justify-content: space-between;
     }
 
     .select-group {
@@ -576,52 +580,38 @@ tr:hover .rate-value.middle {
     .chart-controls {
         flex-direction: row;
         flex-wrap: wrap;
-        justify-content: center;
     }
 
     .chart-controls select {
         flex: 1;
         min-width: 120px;
     }
+
+    .table-wrapper {
+        max-height: 300px;
+    }
 }
 
-/* 平板设备优化 */
-@media (min-width: 769px) and (max-width: 1024px) {
+/* 超小屏幕优化 */
+@media (max-width: 320px) {
     .container {
-        max-width: 95%;
-        padding: 20px;
+        padding: 5px;
     }
 
     .chart-container {
-        height: 300px;
+        height: 250px;
+        min-height: 250px;
     }
 
-    table {
-        font-size: 0.9em;
-    }
-}
-
-/* 触摸设备交互优化 */
-@media (hover: none) {
-    .select-group select,
-    button,
-    .rate-value {
-        cursor: pointer;
-        -webkit-tap-highlight-color: transparent;
+    .result-amount {
+        font-size: 1.5em;
     }
 
-    .table-wrapper {
-        -webkit-overflow-scrolling: touch;
-        scroll-behavior: smooth;
-    }
-}
-
-/* 添加安全区域适配 */
-@supports (padding: max(0px)) {
-    .container {
-        padding-left: max(15px, env(safe-area-inset-left));
-        padding-right: max(15px, env(safe-area-inset-right));
-        padding-bottom: max(15px, env(safe-area-inset-bottom));
+    .rate-value,
+    .rate-change-up,
+    .rate-change-down {
+        min-width: 40px;
+        font-size: 0.75em;
     }
 }
 
@@ -693,6 +683,14 @@ tr:hover .rate-value.middle {
         color: #e2e8f0;
         border-top-color: rgba(255, 255, 255, 0.1);
     }
+
+    .loading {
+        background: rgba(0, 0, 0, 0.8);
+    }
+
+    .error-message {
+        background: rgba(220, 38, 38, 0.95);
+    }
 }
 
 /* 添加触摸反馈效果 */
@@ -709,27 +707,173 @@ tr:hover .rate-value.middle {
 
 /* 优化加载状态 */
 .loading {
-    position: relative;
-    opacity: 0.7;
-    pointer-events: none;
-}
-
-.loading::after {
-    content: '';
-    position: absolute;
+    position: fixed;
     top: 50%;
     left: 50%;
-    width: 20px;
-    height: 20px;
-    margin: -10px 0 0 -10px;
-    border: 2px solid rgba(102, 126, 234, 0.3);
-    border-top-color: #667eea;
+    transform: translate(-50%, -50%);
+    width: 40px;
+    height: 40px;
+    border: 3px solid rgba(102, 126, 234, 0.2);
     border-radius: 50%;
-    animation: spin 0.8s linear infinite;
+    border-top-color: #667eea;
+    animation: spin 1s ease-in-out infinite;
+    z-index: 1000;
 }
 
 @keyframes spin {
+    to { transform: translate(-50%, -50%) rotate(360deg); }
+}
+
+/* 错误提示样式优化 */
+.error-message {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #f56565;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-size: 14px;
+    z-index: 1000;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    animation: slideIn 0.3s ease-out;
+    transition: opacity 0.3s ease-out;
+}
+
+@keyframes slideIn {
+    from {
+        transform: translate(-50%, -100%);
+        opacity: 0;
+    }
     to {
-        transform: rotate(360deg);
+        transform: translate(-50%, 0);
+        opacity: 1;
+    }
+}
+
+/* 移动端优化 */
+@media screen and (max-width: 768px) {
+    .container {
+        padding: 12px;
+        max-width: 100%;
+    }
+
+    .converter-box {
+        padding: 16px;
+        margin-bottom: 16px;
+    }
+
+    .input-group {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .input-group input,
+    .input-group select {
+        width: 100%;
+        font-size: 16px;
+        padding: 8px 12px;
+    }
+
+    .swap-button {
+        margin: 8px auto;
+        transform: rotate(90deg);
+    }
+
+    .chart-container {
+        height: 250px;
+        margin: 16px 0;
+    }
+
+    .chart-controls {
+        flex-wrap: wrap;
+        gap: 8px;
+        margin-bottom: 12px;
+    }
+
+    .chart-controls select {
+        flex: 1;
+        min-width: calc(50% - 4px);
+        font-size: 14px;
+    }
+
+    .rate-table-wrapper {
+        margin-top: 16px;
+        border-radius: 8px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        position: relative;
+    }
+
+    .rate-table {
+        min-width: 100%;
+        font-size: 14px;
+    }
+
+    .rate-table th {
+        position: sticky;
+        top: 0;
+        background: #f7fafc;
+        z-index: 10;
+        padding: 8px;
+        white-space: nowrap;
+    }
+
+    .rate-table td {
+        padding: 8px;
+        white-space: nowrap;
+    }
+
+    .rate-value {
+        font-size: 13px;
+    }
+
+    .rate-change-up,
+    .rate-change-down {
+        font-size: 12px;
+        padding: 2px 4px;
+    }
+
+    /* 适配刘海屏 */
+    @supports (padding: max(0px)) {
+        .container {
+            padding-left: max(12px, env(safe-area-inset-left));
+            padding-right: max(12px, env(safe-area-inset-right));
+            padding-bottom: max(12px, env(safe-area-inset-bottom));
+        }
+    }
+
+    /* 横屏优化 */
+    @media screen and (orientation: landscape) {
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .converter-box {
+            margin-bottom: 0;
+        }
+
+        .chart-container {
+            height: 200px;
+        }
+    }
+}
+
+/* 暗色模式支持 */
+@media (prefers-color-scheme: dark) {
+    .rate-table th {
+        background: #2d3748;
+    }
+
+    .error-message {
+        background-color: #e53e3e;
+    }
+
+    .loading {
+        border-color: rgba(102, 126, 234, 0.2);
+        border-top-color: #667eea;
     }
 } 

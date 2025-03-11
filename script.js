@@ -105,14 +105,51 @@ function updateCurrentTime() {
     elements.currentTime.textContent = `当前时间：${now.toLocaleString('zh-CN')}`;
 }
 
-// 获取汇率数据
+// 错误处理优化
+function showError(message) {
+    const existingError = document.querySelector('.error-message');
+    if (existingError) {
+        existingError.remove();
+    }
+
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.textContent = message;
+    document.body.appendChild(errorDiv);
+
+    // 3秒后自动移除
+    setTimeout(() => {
+        errorDiv.style.opacity = '0';
+        setTimeout(() => errorDiv.remove(), 300);
+    }, 3000);
+}
+
+// 加载状态处理优化
+function showLoading() {
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'loading';
+    document.body.appendChild(loadingDiv);
+    return loadingDiv;
+}
+
+function hideLoading(loadingElement) {
+    if (loadingElement) {
+        loadingElement.style.opacity = '0';
+        setTimeout(() => loadingElement.remove(), 300);
+    }
+}
+
+// 获取汇率数据优化
 async function getExchangeRates(base) {
+    const loading = showLoading();
     try {
         const response = await axios.get(`${API_BASE_URL}/${API_KEY}/latest/${base}`);
+        hideLoading(loading);
         return response.data;
     } catch (error) {
+        hideLoading(loading);
         console.error('获取汇率数据失败:', error);
-        showError('获取汇率数据失败，请稍后重试');
+        showError('获取汇率数据失败，请检查网络连接后重试');
         return null;
     }
 }
@@ -139,9 +176,13 @@ function convertCurrency() {
     }
 }
 
-// 初始化图表
+// 初始化图表优化
 function initializeChart() {
     const ctx = document.getElementById('rateChart').getContext('2d');
+    
+    // 检查是否在移动设备上
+    const isMobile = window.innerWidth <= 768;
+    
     rateChart = new Chart(ctx, {
         type: 'line',
         data: {
@@ -151,7 +192,7 @@ function initializeChart() {
                 data: [],
                 borderColor: '#667eea',
                 backgroundColor: 'rgba(102, 126, 234, 0.1)',
-                borderWidth: 2,
+                borderWidth: isMobile ? 1.5 : 2,
                 fill: true,
                 tension: 0.4
             }]
@@ -167,6 +208,13 @@ function initializeChart() {
                         label: function(context) {
                             return `汇率: ${context.parsed.y.toFixed(4)}`;
                         }
+                    },
+                    padding: isMobile ? 8 : 12,
+                    titleFont: {
+                        size: isMobile ? 12 : 14
+                    },
+                    bodyFont: {
+                        size: iMobile ? 11 : 13
                     }
                 },
                 legend: {
@@ -179,12 +227,24 @@ function initializeChart() {
                     ticks: {
                         callback: function(value) {
                             return value.toFixed(4);
+                        },
+                        font: {
+                            size: isMobile ? 10 : 12
                         }
+                    },
+                    grid: {
+                        color: 'rgba(102, 126, 234, 0.1)'
                     }
                 },
                 x: {
                     grid: {
                         display: false
+                    },
+                    ticks: {
+                        maxRotation: isMobile ? 45 : 0,
+                        font: {
+                            size: iMobile ? 10 : 12
+                        }
                     }
                 }
             },
@@ -196,11 +256,12 @@ function initializeChart() {
     });
 }
 
-// 更新图表数据
+// 更新图表数据优化
 async function updateChart() {
     const currency = elements.chartCurrency.value;
     const period = elements.chartPeriod.value;
     const interval = elements.chartInterval.value;
+    const loading = showLoading();
 
     try {
         const response = await axios.get(
@@ -208,6 +269,10 @@ async function updateChart() {
         );
 
         const data = response.data;
+        if (!data || !data.rates) {
+            throw new Error('无效的数据格式');
+        }
+
         const rates = data.rates;
         const dates = Object.keys(rates).sort();
         const values = dates.map(date => rates[date][currency]);
@@ -215,10 +280,22 @@ async function updateChart() {
         // 根据选择的时间间隔处理数据
         const processedData = processChartData(dates, values, interval);
 
+        // 更新图表配置
         rateChart.data.labels = processedData.dates;
         rateChart.data.datasets[0].data = processedData.values;
+        
+        // 优化Y轴显示
+        const minValue = Math.min(...processedData.values);
+        const maxValue = Math.max(...processedData.values);
+        const padding = (maxValue - minValue) * 0.1;
+        
+        rateChart.options.scales.y.min = minValue - padding;
+        rateChart.options.scales.y.max = maxValue + padding;
+        
         rateChart.update();
+        hideLoading(loading);
     } catch (error) {
+        hideLoading(loading);
         console.error('获取历史数据失败:', error);
         showError('获取历史数据失败，请稍后重试');
     }
@@ -270,48 +347,41 @@ function processChartData(dates, values, interval) {
     return processed;
 }
 
-// 更新汇率表
+// 更新汇率表格优化
 function updateRateTable(rates) {
+    if (!rates) return;
+
     const mainCurrencies = ['USD', 'EUR', 'JPY', 'GBP', 'AUD', 'CAD', 'HKD', 'SGD'];
     let tableHTML = '';
 
-    mainCurrencies.forEach(currency => {
-        if (currency !== elements.fromCurrency.value) {
-            const rate = rates[currency];
-            const change = ((rate - rate * 0.98) / (rate * 0.98) * 100).toFixed(2);
-            const changeClass = change >= 0 ? 'rate-change-up' : 'rate-change-down';
-            const buyRate = (rate * 0.98).toFixed(4);
-            const sellRate = (rate * 1.02).toFixed(4);
-            
-            tableHTML += `
-                <tr>
-                    <td>${currency}</td>
-                    <td><span class="rate-value buy">${buyRate}</span></td>
-                    <td><span class="rate-value sell">${sellRate}</span></td>
-                    <td><span class="rate-value middle">${rate.toFixed(4)}</span></td>
-                    <td><span class="${changeClass}">${change}%</span></td>
-                </tr>
-            `;
-        }
-    });
+    try {
+        mainCurrencies.forEach(currency => {
+            if (currency !== elements.fromCurrency.value) {
+                const rate = rates[currency];
+                if (typeof rate !== 'number') return;
 
-    elements.rateTableBody.innerHTML = tableHTML;
-}
+                const change = ((rate - rate * 0.98) / (rate * 0.98) * 100).toFixed(2);
+                const changeClass = change >= 0 ? 'rate-change-up' : 'rate-change-down';
+                const buyRate = (rate * 0.98).toFixed(4);
+                const sellRate = (rate * 1.02).toFixed(4);
+                
+                tableHTML += `
+                    <tr>
+                        <td>${currency}</td>
+                        <td><span class="rate-value buy">${buyRate}</span></td>
+                        <td><span class="rate-value sell">${sellRate}</span></td>
+                        <td><span class="rate-value middle">${rate.toFixed(4)}</span></td>
+                        <td><span class="${changeClass}">${change}%</span></td>
+                    </tr>
+                `;
+            }
+        });
 
-// 显示错误信息
-function showError(message) {
-    // 创建错误提示元素
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'error-message';
-    errorDiv.textContent = message;
-    
-    // 添加到页面
-    document.body.appendChild(errorDiv);
-    
-    // 3秒后自动移除
-    setTimeout(() => {
-        errorDiv.remove();
-    }, 3000);
+        elements.rateTableBody.innerHTML = tableHTML;
+    } catch (error) {
+        console.error('更新汇率表格失败:', error);
+        showError('更新汇率表格失败，请刷新页面重试');
+    }
 }
 
 // 添加移动端触摸支持
