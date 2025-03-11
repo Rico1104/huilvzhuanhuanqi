@@ -386,163 +386,246 @@ tr:hover .rate-value.middle {
 
 /* 响应式设计 */
 @media (max-width: 768px) {
+    body {
+        padding: 5px;
+        background-attachment: fixed;
+    }
+
     .container {
-        padding: 20px;
+        padding: 12px;
+        margin: 0;
+        width: 100%;
+        border-radius: 12px;
     }
 
-    .currency-selectors {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    #swap-button {
-        align-self: center;
-        margin: 10px 0;
-    }
-
-    .chart-container {
-        margin: 30px 0 80px 0;
-        padding: 20px;
-    }
-
+    /* 汇率表格容器优化 */
     .rate-table {
-        padding: 20px;
-        margin: 15px 0 25px 0;
+        margin: 10px 0;
+        padding: 10px;
+        overflow: hidden;
     }
 
-    th, td {
-        padding: 15px 12px;
+    /* 表格滚动容器优化 */
+    .table-wrapper {
+        margin: 0;
+        padding: 0;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        scrollbar-width: none; /* Firefox */
+        -ms-overflow-style: none; /* IE and Edge */
+        position: relative;
+    }
+
+    .table-wrapper::-webkit-scrollbar {
+        display: none; /* Chrome, Safari and Opera */
+    }
+
+    /* 表格布局优化 */
+    table {
+        min-width: 100%;
+        font-size: 0.8em;
+        border-collapse: collapse;
+    }
+
+    th {
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        padding: 8px 6px;
+        font-size: 0.75em;
+        white-space: nowrap;
+        background: linear-gradient(45deg, #667eea, #764ba2);
+    }
+
+    td {
+        padding: 8px 6px;
         font-size: 0.9em;
     }
 
-    .rate-change-up, .rate-change-down {
-        padding: 4px 8px;
-        min-width: 70px;
-        font-size: 0.9em;
-    }
-
-    .chart-controls {
-        flex-direction: column;
-        align-items: stretch;
-    }
-
-    .signature {
-        margin-top: 30px;
-        padding-top: 15px;
-        font-size: 0.85em;
-    }
-
+    /* 汇率值显示优化 */
     .rate-value {
-        padding: 6px 8px;
-        min-width: 70px;
-        font-size: 0.9em;
-    }
-}
-
-/* 错误提示样式 */
-.error-message {
-    position: fixed;
-    top: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: rgba(220, 38, 38, 0.9);
-    color: white;
-    padding: 12px 24px;
-    border-radius: 8px;
-    font-size: 0.9em;
-    z-index: 1000;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    animation: slideIn 0.3s ease-out;
-}
-
-@keyframes slideIn {
-    from {
-        transform: translate(-50%, -100%);
-        opacity: 0;
-    }
-    to {
-        transform: translate(-50%, 0);
-        opacity: 1;
-    }
-}
-
-/* 增强移动端响应式样式 */
-@media (max-width: 768px) {
-    .container {
-        padding: 15px;
-        margin: 10px;
-        width: calc(100% - 20px);
+        padding: 4px 6px;
+        min-width: 60px;
+        font-size: 0.8em;
     }
 
-    h1 {
-        font-size: 1.5em;
-        margin-bottom: 15px;
+    .rate-change-up,
+    .rate-change-down {
+        padding: 3px 6px;
+        min-width: 50px;
+        font-size: 0.8em;
     }
 
-    h2 {
-        font-size: 1.2em;
-    }
-
-    .input-group input,
-    .select-group select {
-        font-size: 16px; /* 防止iOS自动缩放 */
+    /* 图表区域优化 */
+    .chart-container {
+        margin: 15px 0;
         padding: 10px;
-    }
-
-    .currency-selectors {
-        flex-direction: column;
-        gap: 10px;
-    }
-
-    #swap-button {
-        align-self: center;
-        margin: 5px 0;
-    }
-
-    .result-amount {
-        font-size: 2em;
+        height: 250px;
     }
 
     .chart-controls {
-        flex-direction: column;
-        gap: 10px;
-        padding: 10px;
+        padding: 8px;
+        gap: 6px;
     }
 
     .chart-controls select {
-        width: 100%;
+        padding: 8px;
+        font-size: 0.9em;
+        height: 36px;
     }
 
-    .table-wrapper {
-        overflow-x: auto;
-        -webkit-overflow-scrolling: touch;
-        margin: 0 -15px;
-        padding: 0 15px;
+    /* 转换器区域优化 */
+    .converter-box {
+        gap: 12px;
+        margin-bottom: 20px;
+    }
+
+    .currency-selectors {
+        gap: 8px;
+    }
+
+    .select-group select {
+        height: 42px;
+        padding: 8px;
+    }
+
+    /* 结果显示优化 */
+    .result {
+        padding: 15px;
+    }
+
+    .result-amount {
+        font-size: 1.6em;
+        word-break: break-all;
+    }
+
+    .exchange-rate {
+        font-size: 0.8em;
+        padding: 3px 6px;
+    }
+
+    /* 标题和信息优化 */
+    h1 {
+        font-size: 1.3em;
+        margin-bottom: 10px;
+    }
+
+    h2 {
+        font-size: 1.1em;
+        margin-bottom: 8px;
+    }
+
+    .rate-info {
+        font-size: 0.75em;
+        padding: 6px;
+        margin-bottom: 10px;
+    }
+}
+
+/* 超小屏幕优化 */
+@media (max-width: 320px) {
+    .container {
+        padding: 8px;
+    }
+
+    h1 {
+        font-size: 1.2em;
+    }
+
+    .result-amount {
+        font-size: 1.4em;
+    }
+
+    .rate-value,
+    .rate-change-up,
+    .rate-change-down {
+        min-width: 45px;
+        font-size: 0.75em;
+    }
+}
+
+/* 横屏模式优化 */
+@media (max-width: 768px) and (orientation: landscape) {
+    body {
+        padding: 5px;
+    }
+
+    .container {
+        max-width: 95%;
+        margin: 0 auto;
+    }
+
+    .chart-container {
+        height: 200px;
+    }
+
+    .currency-selectors {
+        flex-direction: row;
+        align-items: center;
+        justify-content: space-between;
+    }
+
+    .select-group {
+        flex: 1;
+    }
+
+    #swap-button {
+        margin: 0 8px;
+    }
+
+    .chart-controls {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .chart-controls select {
+        flex: 1;
+        min-width: 120px;
+    }
+}
+
+/* 平板设备优化 */
+@media (min-width: 769px) and (max-width: 1024px) {
+    .container {
+        max-width: 95%;
+        padding: 20px;
+    }
+
+    .chart-container {
+        height: 300px;
     }
 
     table {
         font-size: 0.9em;
     }
+}
 
-    th, td {
-        padding: 10px 8px;
-    }
-
+/* 触摸设备交互优化 */
+@media (hover: none) {
+    .select-group select,
+    button,
     .rate-value {
-        padding: 4px 8px;
-        min-width: 60px;
-        font-size: 0.85em;
+        cursor: pointer;
+        -webkit-tap-highlight-color: transparent;
     }
 
-    .rate-change-up,
-    .rate-change-down {
-        padding: 4px 8px;
-        min-width: 60px;
-        font-size: 0.85em;
+    .table-wrapper {
+        -webkit-overflow-scrolling: touch;
+        scroll-behavior: smooth;
     }
 }
 
-/* 添加暗色模式支持 */
+/* 添加安全区域适配 */
+@supports (padding: max(0px)) {
+    .container {
+        padding-left: max(15px, env(safe-area-inset-left));
+        padding-right: max(15px, env(safe-area-inset-right));
+        padding-bottom: max(15px, env(safe-area-inset-bottom));
+    }
+}
+
+/* 优化暗色模式 */
 @media (prefers-color-scheme: dark) {
     body {
         background: linear-gradient(135deg, #1a1c2c 0%, #4a1c40 100%);
