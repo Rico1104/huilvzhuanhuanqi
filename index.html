@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta name="theme-color" content="#667eea">
+    <meta name="description" content="实时汇率转换器 - 支持多币种转换和汇率走势图">
+    <title>汇率转换器</title>
+    <link rel="manifest" href="manifest.json">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- 添加 Axios 用于API请求 -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <h1>汇率转换器</h1>
+        <div class="rate-info">
+            <div class="current-time" id="current-time"></div>
+            <div class="rate-update-time" id="rate-update-time"></div>
+        </div>
+        <div class="converter-box">
+            <div class="input-group">
+                <label for="amount">金额</label>
+                <input type="number" id="amount" placeholder="请输入金额" min="0" step="0.01" inputmode="decimal">
+            </div>
+            
+            <div class="currency-selectors">
+                <div class="select-group">
+                    <label for="from-currency">从</label>
+                    <select id="from-currency">
+                        <option value="CNY">人民币 (CNY)</option>
+                        <option value="USD">美元 (USD)</option>
+                        <option value="EUR">欧元 (EUR)</option>
+                        <option value="JPY">日元 (JPY)</option>
+                        <option value="GBP">英镑 (GBP)</option>
+                        <option value="AUD">澳元 (AUD)</option>
+                        <option value="CAD">加拿大元 (CAD)</option>
+                        <option value="HKD">港币 (HKD)</option>
+                        <option value="SGD">新加坡元 (SGD)</option>
+                        <option value="CHF">瑞士法郎 (CHF)</option>
+                        <option value="NZD">新西兰元 (NZD)</option>
+                        <option value="KRW">韩元 (KRW)</option>
+                    </select>
+                </div>
+
+                <button id="swap-button" title="交换货币" aria-label="交换货币">⇄</button>
+
+                <div class="select-group">
+                    <label for="to-currency">到</label>
+                    <select id="to-currency">
+                        <option value="USD">美元 (USD)</option>
+                        <option value="CNY">人民币 (CNY)</option>
+                        <option value="EUR">欧元 (EUR)</option>
+                        <option value="JPY">日元 (JPY)</option>
+                        <option value="GBP">英镑 (GBP)</option>
+                        <option value="AUD">澳元 (AUD)</option>
+                        <option value="CAD">加拿大元 (CAD)</option>
+                        <option value="HKD">港币 (HKD)</option>
+                        <option value="SGD">新加坡元 (SGD)</option>
+                        <option value="CHF">瑞士法郎 (CHF)</option>
+                        <option value="NZD">新西兰元 (NZD)</option>
+                        <option value="KRW">韩元 (KRW)</option>
+                    </select>
+                </div>
+            </div>
+
+            <button id="convert-button">转换</button>
+
+            <div class="result" id="result">
+                <div class="result-amount">
+                    <span id="converted-amount">0.00</span>
+                </div>
+                <div class="exchange-rate" id="exchange-rate">
+                    1 USD = <span id="rate">0.00</span> CNY
+                </div>
+            </div>
+        </div>
+        
+        <div class="chart-container">
+            <h2>汇率走势</h2>
+            <div class="chart-controls">
+                <select id="chart-currency">
+                    <option value="USD">美元 (USD)</option>
+                    <option value="EUR">欧元 (EUR)</option>
+                    <option value="JPY">日元 (JPY)</option>
+                    <option value="GBP">英镑 (GBP)</option>
+                    <option value="AUD">澳元 (AUD)</option>
+                    <option value="HKD">港币 (HKD)</option>
+                </select>
+                <select id="chart-period">
+                    <option value="7">最近7天</option>
+                    <option value="30">最近30天</option>
+                    <option value="90">最近3个月</option>
+                    <option value="180">最近6个月</option>
+                    <option value="365">最近1年</option>
+                    <option value="730">最近2年</option>
+                </select>
+                <select id="chart-interval">
+                    <option value="day">按天</option>
+                    <option value="week">按周</option>
+                    <option value="month">按月</option>
+                </select>
+            </div>
+            <canvas id="rateChart"></canvas>
+        </div>
+
+        <div class="rate-table">
+            <h2>实时汇率表</h2>
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>货币</th>
+                            <th>买入价</th>
+                            <th>卖出价</th>
+                            <th>中间价</th>
+                            <th>涨跌幅</th>
+                        </tr>
+                    </thead>
+                    <tbody id="rate-table-body">
+                        <!-- 数据将通过 JavaScript 动态填充 -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="signature">Rico</div>
+    </div>
+
+    <!-- Service Worker 注册 -->
+    <script>
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('/sw.js')
+                    .then(registration => {
+                        console.log('ServiceWorker registration successful');
+                    })
+                    .catch(err => {
+                        console.log('ServiceWorker registration failed: ', err);
+                    });
+            });
+        }
+    </script>
+    <script src="script.js"></script>
+</body>
+</html> 
